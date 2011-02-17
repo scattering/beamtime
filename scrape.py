@@ -28,7 +28,6 @@ class NCNR:
     url = "http://www.ncnr.nist.gov/call/current_call.html"
     def scrape(self):
         self.deadline = "activity suspended until Feb. 2012"
-        pass
 AMERICAS.append(NCNR())
 
 class ORNL:
@@ -61,8 +60,7 @@ class CNBC:
     name = "CNBC, Chalk River"
     url = "http://www.cins.ca/beam.html"
     deadline = "continuous proposal system"
-    def scrape(self):
-        pass
+    def scrape(self): pass
 AMERICAS.append(CNBC())
 
 class ANSTO:
@@ -82,8 +80,7 @@ EAST.append(ANSTO())
 class JPARC:
     name = "J-PARC"
     url = "http://j-parc.jp/MatLife/en/applying/koubo.html"
-    def scrape(self):
-        pass
+    def scrape(self): pass
 EAST.append(JPARC())
 
 class ISIS:
@@ -112,13 +109,25 @@ class ILL:
             raise "Can't find proposal data. Website layout changed?"
 EUROPE.append(ILL())
 
+class LLB:
+    name = "LLB"
+    url = "http://www-llb.cea.fr/en/fr-en/proposal.php"
+    deadline = "1 May and 1 November annually"
+    def scape(self): pass
+EUROPE.append(LLB())
+
 class BENSC:
     name = "BENSC"
     url = "http://www.helmholtz-berlin.de/user/neutrons/user-info/call-for-proposals_en.html"
     deadline = "1 March and 1 September annually"
-    def scrape(self):
-        pass
+    def scrape(self): pass
 EUROPE.append(BENSC())
+
+class FRM_II:
+    name = "FRM II"
+    url = "http://www.frm2.tum.de/en/user-office/user-guide/index.html"
+    def scrape(self): pass
+EUROPE.append(FRM_II())
 
 class SINQ:
     name = "SINQ"
