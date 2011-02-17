@@ -1,0 +1,79 @@
+/*
+Based on:
+
+  http://www.elated.com/articles/styling-tables-with-css/
+
+*/
+
+.pretty-table
+{
+  padding: 0;
+  margin: 0;
+  border-collapse: collapse;
+  border: 1px solid #333;
+  font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 0.9em;
+  color: #000;
+  /* background: #bcd0e4 url("widget-table-bg.jpg") top left repeat-x; */
+}
+
+.pretty-table caption
+{
+  caption-side: bottom;
+  font-size: 0.9em;
+  font-style: italic;
+  text-align: right;
+  padding: 0.5em 0;
+}
+
+.pretty-table th, .pretty-table td
+{
+  border: 1px dotted #666;
+  padding: 0.5em;
+  text-align: left;
+  color: #632a39;
+}
+
+.pretty-table th[scope=col]
+{
+  color: #000;
+  background-color: #8fadcc;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  border-bottom: 2px solid #333;
+  border-right: 2px solid #333;
+}
+
+.pretty-table th+th[scope=col]
+{
+  color: #fff;
+  background-color: #7d98b3;
+  border-right: 1px dotted #666;
+}
+
+.pretty-table th[scope=row]
+{
+  background-color: #b8cfe5;
+  border-right: 1px solid #333;
+}
+
+.pretty-table .region th
+{
+  padding-left: 2em;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+
+
+.pretty-table tr.alt th, .pretty-table tr.alt td
+{
+  color: #2a4763;
+}
+
+.pretty-table tr:hover th[scope=row], .pretty-table tr:hover td
+{
+  background-color: #632a2a;
+  color: #fff;
+}
+
