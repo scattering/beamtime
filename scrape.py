@@ -4,9 +4,10 @@
 import sys
 import smtplib
 import traceback
-import BeautifulSoup
 import urllib2
 import re
+
+import BeautifulSoup
 
 # ===== Configuration ======
 
