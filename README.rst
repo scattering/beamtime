@@ -29,11 +29,13 @@ Edit scrape.py, changing WEBMASTER='' to::
 This will ensure that you are notified of errors during web scraping
 and allow you to adjust the rules accordingly.
 
-When the error notification is set, you can run the following as a cron
-job on your server::
+To keep the information up to date, the following commands need to 
+be run daily on your server::
 
     $ python scrape.py > /var/www/deadline.html
     $ chmod a+r /var/www/deadline.html
+
+This is usually done using cron.
 
 
 Adding facilities
