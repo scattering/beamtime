@@ -8,7 +8,9 @@ import urllib2
 import re
 from datetime import datetime
 
+# Get a time stamp for the start of today.
 today = datetime.today()
+today = datetime(year=today.year,month=today.month,day=today.day)
 
 # ===== Configuration ======
 
@@ -42,7 +44,7 @@ class ORNL:
         match = list(pat.findall(data))
         for deadline, period in match:
             # TODO: this will fail if Locale indicates non-English month names
-            if datetime.strptime(deadline, '%B %d, %Y') > today:
+            if datetime.strptime(deadline, '%B %d, %Y') >= today:
                 self.deadline, self.period = deadline, period
                 break
         else:
@@ -124,11 +126,11 @@ class LLB:
         if (5 < today.month < 11 
             or (today.month == 5 and today.day > 1) 
             or (today.month == 11 and today.day == 1)):
-             self.deadline = "November 1, %d"%today.year
+             self.deadline = "1 November %d"%today.year
         elif today.month > 5:
-             self.deadline = "May 1, %d"%(today.year+1)
+             self.deadline = "1 May %d"%(today.year+1)
         else:
-             self.deadline = "May 1, %d"%(today.year) 
+             self.deadline = "1 May %d"%(today.year) 
 EUROPE.append(LLB())
 
 class BENSC:
@@ -136,14 +138,14 @@ class BENSC:
     url = "http://www.helmholtz-berlin.de/user/neutrons/user-info/call-for-proposals_en.html"
     #deadline = "1 March and 1 September annually"
     def scrape(self):
-        if (3 < today.month < 11
+        if (3 < today.month < 9
             or (today.month == 3 and today.day > 1)
             or (today.month == 9 and today.day == 1)):
-             self.deadline = "September 1, %d"%today.year
+             self.deadline = "1 September %d"%today.year
         elif today.month > 3:
-             self.deadline = "March 1, %d"%(today.year+1)
+             self.deadline = "1 March %d"%(today.year+1)
         else:
-             self.deadline = "March 1, %d"%(today.year)
+             self.deadline = "1 March %d"%(today.year)
 
 EUROPE.append(BENSC())
 
