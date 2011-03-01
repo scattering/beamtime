@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This program is in the public domain
 # Author: Paul Kienzke, William Ratcliff
 
