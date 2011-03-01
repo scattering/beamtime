@@ -121,8 +121,9 @@ EUROPE.append(ILL())
 class LLB:
     name = "LLB"
     url = "http://www-llb.cea.fr/en/fr-en/proposal.php"
-    #deadline = "1 May and 1 November annually"
+    deadline = "1 May and 1 November annually"
     def scrape(self):
+        return # Show all rather than just the next
         if (5 < today.month < 11 
             or (today.month == 5 and today.day > 1) 
             or (today.month == 11 and today.day == 1)):
@@ -136,8 +137,9 @@ EUROPE.append(LLB())
 class BENSC:
     name = "BENSC"
     url = "http://www.helmholtz-berlin.de/user/neutrons/user-info/call-for-proposals_en.html"
-    #deadline = "1 March and 1 September annually"
+    deadline = "1 March and 1 September annually"
     def scrape(self):
+        return # Show all rather than just the next
         if (3 < today.month < 9
             or (today.month == 3 and today.day > 1)
             or (today.month == 9 and today.day == 1)):
