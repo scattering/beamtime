@@ -12,14 +12,8 @@ Requires
 --------
 
 * Web server
-* cron job
+* cron job scheduler
 * python 2.5 or above
-* python BeautifulSoup
-
-The BeautifulSoup package may be available for your server operating
-system (Ubuntu provides it as the package *python-beautifulsoup*), but
-if not, it can easily be installed using 'easy_install beautifulsoup'
-or perhaps 'pip install beautifulsoup'.
 
 Installation
 ------------
@@ -52,7 +46,7 @@ available, or raises an error.  See the examples in the code for
 implementing scrape.
 
 To extend this effectively, you will have to understand the python
-regular expression parser. In particular, not that we are using the
+regular expression parser. In particular, note that we are using the
 pattern (.*?) to match a date, and match.group(1) to extract it.  The
 parenthesis cause everything matched within them to be returned as a
 group, and the question mark limits it to the shortest possible match.
@@ -62,12 +56,11 @@ for the match.
 When a facility is updated or a new facility is added you can test
 that the web scraping works using::
 
-    $ python scrape.py CLASSNAME > deadline.html
+    $ python scrape.py FACILITY > deadline.html
 
-This will attempt to retrieve just the facility given by *CLASSNAME*.
+This will attempt to retrieve just the facility given by *FACILITY*.
 
-Please arrange to update github with the latest version of the 
-scraping patterns.
+Please post any updates to the scraping pattern to github.
 
 Removing brittleness
 --------------------

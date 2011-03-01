@@ -6,8 +6,9 @@ import smtplib
 import traceback
 import urllib2
 import re
+from datetime import datetime
 
-import BeautifulSoup
+today = datetime.today()
 
 # ===== Configuration ======
 
@@ -35,12 +36,17 @@ class ORNL:
     name = "ORNL"
     url = "http://neutrons.ornl.gov/users/proposals.shtml"
     def scrape(self):
-        dom = fetchdom(self.url)
-        info = dom.find('tr',attrs={'class': 'rh'})
-        deadline,period,cycle = info.findAll('td')
-        self.deadline = deadline.string
-        self.period = period.string
-        pass
+        data = fetchurl(self.url)
+        pat = re.compile(r'<td>[^,]+,\s+(.*?),\s+Midnight Eastern Time</td>\s*<td>(.*?)</td>',
+                         flags=re.DOTALL)
+        match = list(pat.findall(data))
+        for deadline, period in match:
+            # TODO: this will fail if Locale indicates non-English month names
+            if datetime.strptime(deadline, '%B %d, %Y') > today:
+                self.deadline, self.period = deadline, period
+                break
+        else:
+            raise ValueError("Can't find proposal data. Website layout changed?")
 AMERICAS.append(ORNL())
 
 class LANSCE:
@@ -54,7 +60,7 @@ class LANSCE:
         if match:
             self.deadline = match.group(1)
         else:
-            raise "Can't find proposal data. Website layout changed?"
+            raise ValueError("Can't find proposal data. Website layout changed?")
 AMERICAS.append(LANSCE())
 
 class CNBC:
@@ -75,7 +81,7 @@ class ANSTO:
             self.deadline = match.group(2)
             self.period = match.group(1)
         else:
-            raise "Can't find proposal data. Website layout changed?"
+            raise ValueError("Can't find proposal data. Website layout changed?")
 EAST.append(ANSTO())
 
 class JPARC:
@@ -95,7 +101,7 @@ class ISIS:
             self.deadline = match.group(1)
             self.period = match.group(2)
         else:
-            raise "Can't find proposal data. Website layout changed?"
+            raise ValueError("Can't find proposal data. Website layout changed?")
 EUROPE.append(ISIS())
 
 class ILL:
@@ -107,21 +113,38 @@ class ILL:
         if match:
             self.deadline = match.group(1)
         else:
-            raise "Can't find proposal data. Website layout changed?"
+            raise ValueError("Can't find proposal data. Website layout changed?")
 EUROPE.append(ILL())
 
 class LLB:
     name = "LLB"
     url = "http://www-llb.cea.fr/en/fr-en/proposal.php"
-    deadline = "1 May and 1 November annually"
-    def scape(self): pass
+    #deadline = "1 May and 1 November annually"
+    def scrape(self):
+        if (5 < today.month < 11 
+            or (today.month == 5 and today.day > 1) 
+            or (today.month == 11 and today.day == 1)):
+             self.deadline = "November 1, %d"%today.year
+        elif today.month > 5:
+             self.deadline = "May 1, %d"%(today.year+1)
+        else:
+             self.deadline = "May 1, %d"%(today.year) 
 EUROPE.append(LLB())
 
 class BENSC:
     name = "BENSC"
     url = "http://www.helmholtz-berlin.de/user/neutrons/user-info/call-for-proposals_en.html"
-    deadline = "1 March and 1 September annually"
-    def scrape(self): pass
+    #deadline = "1 March and 1 September annually"
+    def scrape(self):
+        if (3 < today.month < 11
+            or (today.month == 3 and today.day > 1)
+            or (today.month == 9 and today.day == 1)):
+             self.deadline = "September 1, %d"%today.year
+        elif today.month > 3:
+             self.deadline = "March 1, %d"%(today.year+1)
+        else:
+             self.deadline = "March 1, %d"%(today.year)
+
 EUROPE.append(BENSC())
 
 class FRM_II:
@@ -139,7 +162,7 @@ class SINQ:
         if match:
             self.deadline = match.group(1)
         else:
-            raise "Can't find proposal data. Website layout changed?"
+            raise ValueError("Can't find proposal data. Website layout changed?")
 EUROPE.append(SINQ())
 
 
@@ -153,7 +176,7 @@ PAGE = """\
 
 %(table)s
 
-* This information was automatically obtained from the respective
+* This information was obtained automatically from the respective
 websites and we cannot guarantee that it is correct.  Please verify dates
 with the individual facilities.
 
@@ -231,6 +254,7 @@ def testurl(url):
 def fetchurl(url):
     return urllib2.urlopen(url).read()
 def fetchdom(url):
+    import BeautifulSoup
     return BeautifulSoup.BeautifulSoup(fetchurl(url))
 
 def mail(sender, receivers, message,
@@ -238,9 +262,6 @@ def mail(sender, receivers, message,
     """
     Send an email message to a group of receivers
     """
-    if not WEBMASTER:
-        print >>sys.stderr, message; return
-
     if ':' in server:
         host,port = server.split(':')
         port = int(port)
@@ -263,23 +284,27 @@ def main():
         limit = sys.argv[1:]
     else:
         limit = None
+
+    # Scrape all facility webpages, storing results in the facility objects.
+    # Return 
     errors = scrape(AMERICAS+EUROPE+EAST, limit)
-    if errors:
-        if limit is None:
-            mail(sender="webmaster@beamtime.org",
-                 receivers=WEBMASTER,
-                 message="\n".join(errors),
-                 subject="proposal deadline scraper")
-        else:
-            print >>sys.stdout, "\n".join(errors)
 
     table = build_table([('North America',AMERICAS),
                          ('Europe',EUROPE),
                          ('Asia and Australia',EAST),
                          ])
     page = PAGE%dict(table=table)
-
     print page
+
+    if errors:
+        if limit is not None and WEBMASTER != "":
+            mail(sender=WEBMASTER,
+                 receivers=[WEBMASTER],
+                 message="\n".join(errors),
+                 subject="proposal deadline scraper")
+        else:
+            print >>sys.stderr, "\n".join(errors)
+
 
 if __name__ == "__main__":
     main()
